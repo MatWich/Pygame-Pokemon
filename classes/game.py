@@ -1,5 +1,6 @@
 import pygame
 import config
+from classes.player import Player
 from enum import Enum
 
 class GameStat(Enum):
@@ -17,12 +18,18 @@ class Game():
         self.camera = [0, 0]    # coords
 
     def setUp(self):
+        player = Player()
+        self.objects.append(player)
         self.gameState = GameStat.RUNNING
 
 
     def update(self):
         self.screen.fill(config.BLACK)
         self.keyEvents()
+
+        for obj in self.objects:
+            obj.render(self.screen)
+        pygame.display.update()
 
 
     def keyEvents(self):

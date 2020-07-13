@@ -23,12 +23,13 @@ class Game():
 
     def setUp(self):
         player = Player(1, 1)
-        npc1 = Npc(5, 7)
+        npc1 = Npc(5, 7, "Hello There. How did you find me here?", 0)
         self.player = player        # For keyEvents to be able to move player
         self.npc1 = npc1
         self.objects.append(player) # for drawing
         self.objects.append(npc1)
         self.gameState = GameStat.RUNNING   # mainLoop
+        self.conversation = None #Interaction with NPCs
 
         self.loadMap("map1")
 
@@ -37,11 +38,13 @@ class Game():
         self.screen.fill(config.BLACK)
         self.renderMap(self.screen)
         self.keyEvents()
-
+       # self.displayNpcMessage(self.npc1)
         # ADDING obj to the screen like player npcs
         self.objects[0].render(self.screen, self.camera)
         for obj in self.objects[1:]:
             obj.render(self.screen)
+            if self.conversation == True:
+                obj.interact(self.screen, self.player)
 
         pygame.display.update() # REFRESHES WINDOW
 
@@ -117,8 +120,11 @@ class Game():
     def moveUnit(self, unit, ChangePos):
         newPosition = [unit.position[0] + ChangePos[0], unit.position[1] + ChangePos[1]]
 
+        self.conversation = False
+
         for obj in self.objects:
             if newPosition[0] == obj.position[0] and newPosition[1] == obj.position[1]:
+                self.conversation = True
                 return
 
         # X position
@@ -131,4 +137,7 @@ class Game():
         if self.map[newPosition[1]][newPosition[0]] == "S":
             return
         unit.updatePosition(newPosition)
+
+    def displayNpcMessage(self, unit):
+        unit.interact(self.screen, self.player)
 

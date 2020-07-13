@@ -22,6 +22,15 @@ mapTileImage = {
     "S": pygame.transform.scale(pygame.image.load("images/Sand.png"), (SCALE, SCALE)),
 }
 
+# FONTS
+dialogFont = pygame.font.SysFont('comicsans', 20)    #npcs dialogs
+
+# LABELS
+
+
+# DIALOUGES
+
+
 # IMAGES
 PLAYER_IMG = pygame.image.load("images/player/prof.png")
 NPC1_IMG = pygame.image.load("images/player/NPC1.png")

@@ -15,7 +15,7 @@ class GameStat(Enum):
 class Game():
     def __init__(self, screen):
         self.screen = screen    # SCREEN FROM main.py
-        self.gameState = GameStat.NONE  # For mainLoop
+        self.gameState = GameStat.NONE  # For mainLoops
         self.objects = []   # FOR PLAYER NPCs etc
         self.map = []   # FOR TILE MAP FROM maps directory
         self.cameraX = 0    # it is for properly working camera in width
@@ -40,7 +40,8 @@ class Game():
         self.keyEvents()
        # self.displayNpcMessage(self.npc1)
         # ADDING obj to the screen like player npcs
-        for obj in self.objects[:]:
+        self.player.render(self.screen, self.camera)
+        for obj in self.objects[1:]:
             obj.render(self.screen, self.camera)
             if self.conversation == True:
                 obj.interact(self.screen, self.player)

@@ -17,3 +17,4 @@ clock = pygame.time.Clock()
 while game.gameState == GameStat.RUNNING:
     clock.tick(config.FPS)
     game.update()
+  #  pygame.display.update()

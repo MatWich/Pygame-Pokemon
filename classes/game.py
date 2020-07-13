@@ -23,7 +23,7 @@ class Game():
 
     def setUp(self):
         player = Player(1, 1)
-        npc1 = Npc(5, 7, "Hello There. How did you find me here?", 0)
+        npc1 = Npc(3, 7, "Hello There. How did you find me here?", 0)
         self.player = player        # For keyEvents to be able to move player
         self.npc1 = npc1
         self.objects.append(player) # for drawing
@@ -40,9 +40,8 @@ class Game():
         self.keyEvents()
        # self.displayNpcMessage(self.npc1)
         # ADDING obj to the screen like player npcs
-        self.objects[0].render(self.screen, self.camera)
-        for obj in self.objects[1:]:
-            obj.render(self.screen)
+        for obj in self.objects[:]:
+            obj.render(self.screen, self.camera)
             if self.conversation == True:
                 obj.interact(self.screen, self.player)
 

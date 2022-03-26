@@ -1,23 +1,33 @@
 import pygame
-import config
-import os
-
-class Player:
-
-    def __init__(self, x, y):
-        self.position = [x, y]
-        self.image = pygame.transform.scale(config.PLAYER_IMG, (config.SCALE, config.SCALE))  # LOADING IMAGE & SCALE IT
-        self.rect = pygame.Rect(self.position[0] * config.SCALE, self.position[1] * config.SCALE, config.SCALE , config.SCALE)  # STORING RECTANGLE COORS OF PLAYER
-
-    def updatePosition(self, newPos):
-        self.position[0] = newPos[0]
-        self.position[1] = newPos[1]
+from config import *
 
 
-    def render(self, screen, camera):
-        self.rect = pygame.Rect(self.position[0] * config.SCALE - (camera[0] * config.SCALE), self.position[1] * config.SCALE - (camera[1] * config.SCALE), config.SCALE,config.SCALE)  # STORING RECTANGLE COORS OF PLAYER
+class Player(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.game = game
+        pygame.sprite.Sprite.__init__(self, self.game.all_sprites)
+        # self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        # self.image.fill(RED)
+        self.image = game.player_img
+        self.rect = self.image.get_rect()
+        self.rect.left = x * TILE_SIZE
+        self.rect.top = y * TILE_SIZE
+
+    def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def collide(self, Npc):
-        return self.rect.colliderect(Npc.rect)
+    def update(self):
+        """ Sterowanie """
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            print("csdc")
+        elif keys[pygame.K_d]:
+            self.rect.left += 5
+        elif keys[pygame.K_a]:
+            self.rect.left -= 5
+        elif keys[pygame.K_w]:
+            self.rect.top -= 5
+        elif keys[pygame.K_s]:
+            self.rect.top += 5
+
 

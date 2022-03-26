@@ -1,143 +1,104 @@
 import pygame
-import math
-import config
-
+import random
+from os import path
+from config import *
+from classes.map import Map
+from classes.camera import Camera
 from classes.player import Player
-from classes.npc import Npc
-from enum import Enum
+from classes.tile import Tile
 
 
-class GameStat(Enum):
-    NONE = 0
-    RUNNING = 1
-    ENDED = 2
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode(SCR_SIZE)
+        pygame.display.set_caption(TITLE)
+        self.clock = pygame.time.Clock()
+        self.counter = 0
+        self.load_data()
+        self.set_up()
 
-class Game():
-    def __init__(self, screen):
-        self.screen = screen    # SCREEN FROM main.py
-        self.gameState = GameStat.NONE  # For mainLoops
-        self.objects = []   # FOR PLAYER NPCs etc
-        self.map = []   # FOR TILE MAP FROM maps directory
-        self.cameraX = 0    # it is for properly working camera in width
-        self.camera = [0, 0]    # coords
+    def load_data(self):
+        self.map_bg = Map(path.join(MAP_FOLDER, "map2.txt"))
+        self.map = Map(path.join(MAP_FOLDER, "map3.txt"))
 
-    def setUp(self):
-        player = Player(1, 1)
-        npc1 = Npc(3, 7, "Hello There. How did you find me here?", 0)
-        self.player = player        # For keyEvents to be able to move player
-        self.npc1 = npc1
-        self.objects.append(player) # for drawing
-        self.objects.append(npc1)
-        self.gameState = GameStat.RUNNING   # mainLoop
-        self.conversation = None #Interaction with NPCs
+        self.player_img = pygame.image.load(PLAYER_IMG_PATH).convert_alpha()
+        self.player_img = pygame.transform.scale(self.player_img, (TILE_SIZE, TILE_SIZE))
 
-        self.loadMap("map1")
+        self.enemy_img = pygame.image.load(NPC1_IMG_PATH).convert_alpha()
+        self.enemy_img = pygame.transform.scale(self.enemy_img, (TILE_SIZE, TILE_SIZE))
 
+        self.grass_image = pygame.image.load(GRASS_IMG_PATH).convert_alpha()
+        self.grass_image = pygame.transform.scale(self.grass_image, (TILE_SIZE, TILE_SIZE))
 
-    def update(self):
-        self.screen.fill(config.BLACK)
-        self.renderMap(self.screen)
-        self.keyEvents()
-       # self.displayNpcMessage(self.npc1)
-        # ADDING obj to the screen like player npcs
-        self.player.render(self.screen, self.camera)
-        for obj in self.objects[1:]:
-            obj.render(self.screen, self.camera)
-            if self.conversation == True:
-                obj.interact(self.screen, self.player)
+        pygame.display.set_icon(self.enemy_img)
 
-        pygame.display.update() # REFRESHES WINDOW
+    def set_up(self):
+        self.all_sprites = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
 
+        for row, tiles in enumerate(self.map_bg.data):
+            for col, tile in enumerate(tiles):
+                self.what_to_create(tile, row, col)
 
-    def keyEvents(self):
+        for row, tiles in enumerate(self.map.data):
+            for col, tile in enumerate(tiles):
+                self.what_to_create(tile, row, col)
+
+        self.camera = Camera(self.map.width, self.map.height)
+
+    def mainloop(self):
+        self.run = True
+        while self.run:
+            self.dt = self.clock.tick(FPS) / 1000
+            self.events()
+            self.update()
+            self.draw()
+
+    def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.gameState = GameStat.ENDED
-                # KEY EVENTS
-            elif event.type == pygame.KEYDOWN:
+                self.quit()
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.gameState = GameStat.ENDED
+                    self.quit()
 
-                elif (event.key == pygame.K_w or event.key == pygame.K_UP):
-                    self.moveUnit(self.player, [0, -1])
-                elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
-                    self.moveUnit(self.player, [0, 1])
-                elif (event.key == pygame.K_a or event.key == pygame.K_LEFT):
-                    self.moveUnit(self.player, [-1, 0])
-                elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT):
-                    self.moveUnit(self.player, [1, 0])
+    def update(self):
+        self.all_sprites.update()
+        self.camera.update(self.player)
 
-    def loadMap(self, map):
-        with open("maps/" + map + ".txt") as mapFile:
-            for line in mapFile:
-                tiles = []
-                self.cameraX = 0
-                for i in range(0, len(line) - 1, 2):
-                    tiles.append(line[i])
-                    self.cameraX += 1
+    def draw(self):
+        pygame.display.set_caption("{:.2f}".format(self.clock.get_fps()))
+        self.screen.fill((9, 0, 0))
+        self.draw_grid()
+        self.all_sprites.draw(self.screen)
+        for sprite in self.all_sprites:
+            if isinstance(sprite, Tile):
+                sprite.draw(self.screen, self.camera.apply(sprite))
 
-                self.map.append(tiles)
-           # print(self.map)
+        self.player.draw(self.screen)
+        pygame.display.update()
 
-    def CameraPos(self):
+    def draw_grid(self):
+        for x in range(0, WIDTH, TILE_SIZE):
+            pygame.draw.line(self.screen, (100, 100, 100), (x, 0), (x, HEIGHT))
+        for y in range(0, HEIGHT, TILE_SIZE):
+            pygame.draw.line(self.screen, (100, 100, 100), (0, y), (WIDTH, y))
 
-        # X Postion
-        maxXPos = self.cameraX - config.WIDTH / config.SCALE
-        xPos = self.player.position[0] - math.ceil(round(config.WIDTH / config.SCALE / 2))
+    def what_to_create(self, tile, row, col):
+        if tile == 'P':
+            self.player = Player(self, col, row)
 
-        if xPos <= maxXPos and xPos >= 0:
-            self.camera[0] = xPos
-        elif xPos < 0:
-            self.camera[0] = 0
-        else:
-            self.camera[0] = maxXPos
+        elif tile == 'G':
+            if self.counter % 2 == 0:
+                Tile(self, col, row)
+            else:
+                Tile(self, col, row, self.grass_image)
+            self.counter+=1
 
-        # Y Position
-        maxYPos = len(self.map) - config.HEIGHT / config.SCALE
-        yPos = self.player.position[1] - math.ceil(round(config.WIDTH / config.SCALE / 2))
 
-        if yPos <= maxYPos and yPos >= 0:
-            self.camera[1] = yPos
-        elif yPos < 0:
-            self.camera[1] = 0
-        else:
-            self.camera[1] = maxYPos
-
-    def renderMap(self, screen):
-        self.CameraPos()
-        y_pos = 0
-
-        for line in self.map:
-            x_pos = 0
-            for tile in line:
-                image = config.mapTileImage[tile]
-                rect = pygame.Rect(x_pos * config.SCALE - (self.camera[0] * config.SCALE),
-                                   y_pos * config.SCALE - (self.camera[1] * config.SCALE), config.SCALE, config.SCALE)
-                screen.blit(image, rect)
-                x_pos += 1
-            y_pos += 1
-
-    def moveUnit(self, unit, ChangePos):
-        newPosition = [unit.position[0] + ChangePos[0], unit.position[1] + ChangePos[1]]
-
-        self.conversation = False
-
-        for obj in self.objects:
-            if newPosition[0] == obj.position[0] and newPosition[1] == obj.position[1]:
-                self.conversation = True
-                return
-
-        # X position
-        if newPosition[0] < 0 or newPosition[0] > (len(self.map[0]) - 1):
-            return
-        # Y position
-        if newPosition[1] < 0 or newPosition[1] > (len(self.map[0]) - 1):
-            return
-        # OBSTACLES
-        if self.map[newPosition[1]][newPosition[0]] == "S":
-            return
-        unit.updatePosition(newPosition)
-
-    def displayNpcMessage(self, unit):
-        unit.interact(self.screen, self.player)
-
+    def quit(self):
+        self.run = False
+        pygame.quit()

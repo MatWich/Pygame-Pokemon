@@ -6,6 +6,7 @@ from classes.map import Map
 from classes.camera import Camera
 from classes.player import Player
 from classes.tile import Tile
+from classes.wall import Wall
 
 
 class Game:
@@ -73,12 +74,16 @@ class Game:
         pygame.display.set_caption("{:.2f}".format(self.clock.get_fps()))
         self.screen.fill((9, 0, 0))
         self.draw_grid()
-        self.all_sprites.draw(self.screen)
+        # self.all_sprites.draw(self.screen)
+
         for sprite in self.all_sprites:
             if isinstance(sprite, Tile):
                 sprite.draw(self.screen, self.camera.apply(sprite))
 
-        self.player.draw(self.screen)
+        for sprite in self.walls:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+
+        self.player.draw(self.screen, self.camera.apply(self.player))
         pygame.display.update()
 
     def draw_grid(self):
@@ -97,7 +102,8 @@ class Game:
             else:
                 Tile(self, col, row, self.grass_image)
             self.counter+=1
-
+        elif tile == 'W':
+            Wall(self, col, row)
 
     def quit(self):
         self.run = False

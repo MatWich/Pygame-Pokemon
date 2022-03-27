@@ -42,10 +42,12 @@ SCR_SIZE = (WIDTH, HEIGHT) = (600, 500)
 PLAYER_IMG_PATH = "images/prof.png"
 NPC1_IMG_PATH = "images/Sand.png"
 GRASS_IMG_PATH="images/Grass.png"
+SAND_IMG_PATH="images/NPC1.png"
 
-# Funkcje wspolne dla wszystkich spritow pewnie bd mozna je jakos we wzorcach powstawiac
+
 def collide_hit_rect(sp1, sp2):
     return sp1.hit_rect.colliderect(sp2.rect)
+
 
 def collide_with_walls(sprite, group, dir):
     if dir == 'x':

@@ -10,6 +10,8 @@ class Wall(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load(SAND_IMG_PATH).convert_alpha(), (TILE_SIZE, TILE_SIZE))
         self.rect = self.image.get_rect()
         self.pos = vec(x, y) * TILE_SIZE
+        self.pos.x += TILE_SIZE / 2
+        self.pos.y += TILE_SIZE / 2
         self.rect.center = self.pos
 
     def update(self):

@@ -13,6 +13,8 @@ class Tile(pygame.sprite.Sprite):
             self.image = image
         self.rect = self.image.get_rect()
         self.pos = vec(x, y) * TILE_SIZE
+        self.pos.x += TILE_SIZE / 2
+        self.pos.y += TILE_SIZE / 2
         self.rect.center = self.pos
         # self.rect.y = y * TILE_SIZE
 

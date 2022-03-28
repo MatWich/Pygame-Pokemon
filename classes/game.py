@@ -39,6 +39,7 @@ class Game:
         self.walls = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
+        self.tiles = pygame.sprite.Group()
 
         for row, tiles in enumerate(self.map_bg.data):
             for col, tile in enumerate(tiles):
@@ -76,14 +77,14 @@ class Game:
         self.draw_grid()
         # self.all_sprites.draw(self.screen)
 
-        for sprite in self.all_sprites:
-            if isinstance(sprite, Tile):
-                sprite.draw(self.screen, self.camera.apply(sprite))
+        for sprite in self.tiles:
+            # self.screen.blit(sprite.image, self.camera.apply(sprite))
+            sprite.draw(self.screen, self.camera)
 
         for sprite in self.walls:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            sprite.draw(self.screen, self.camera)
 
-        self.player.draw(self.screen, self.camera.apply(self.player))
+        self.player.draw(self.screen, self.camera)
         pygame.display.update()
 
     def draw_grid(self):
@@ -94,16 +95,16 @@ class Game:
 
     def what_to_create(self, tile, row, col):
         if tile == 'P':
-            self.player = Player(self, col, row)
+            self.player = Player(PLAYER_IMG_PATH, self, self.all_sprites, col, row)
 
         elif tile == 'G':
             if self.counter % 2 == 0:
-                Tile(self, col, row)
+                Tile(SAND_IMG_PATH, self, self.tiles, col, row)
             else:
-                Tile(self, col, row, self.grass_image)
+                Tile(GRASS_IMG_PATH, self, self.tiles, col, row)
             self.counter+=1
         elif tile == 'W':
-            Wall(self, col, row)
+            Wall(NPC1_IMG_PATH, self, self.walls, col, row)
 
     def quit(self):
         self.run = False

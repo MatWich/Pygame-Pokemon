@@ -1,26 +1,15 @@
-import pygame
 from config import *
-vec = pygame.math.Vector2
+from classes.base_sprite import BaseSprite
 
 
-class Tile(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, image=None):
-        self.game = game
-        pygame.sprite.Sprite.__init__(self, game.all_sprites)
-        if image is None:
-            self.image = pygame.transform.scale(pygame.image.load(NPC1_IMG_PATH).convert_alpha(), (TILE_SIZE, TILE_SIZE))
-        else:
-            self.image = image
-        self.rect = self.image.get_rect()
-        self.pos = vec(x, y) * TILE_SIZE
-        self.pos.x += TILE_SIZE / 2
-        self.pos.y += TILE_SIZE / 2
-        self.rect.center = self.pos
-        # self.rect.y = y * TILE_SIZE
+class Tile(BaseSprite):
+    def __init__(self, imagePath, game, groups, x, y):
+        BaseSprite.__init__(self, imagePath, game, groups, x, y)
+
+    def draw(self, screen, camera):
+        super().draw(screen, camera)
 
     def update(self):
-        pass
+        super().update()
 
-    def draw(self, screen, rect):
-        screen.blit(self.image, rect)
 

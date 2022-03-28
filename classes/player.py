@@ -1,27 +1,13 @@
-import pygame
 from config import *
+from classes.base_sprite import BaseSprite
 vec = pygame.math.Vector2
 
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.game = game
-        pygame.sprite.Sprite.__init__(self, self.game.all_sprites)
-        # self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
-        # self.image.fill(RED)
-        self.pos = vec(x, y) * TILE_SIZE
-        self.pos.x += TILE_SIZE / 2
-        self.pos.y += TILE_SIZE / 2
-        self.image = pygame.transform.scale(pygame.image.load("images/prof.png").convert_alpha(), (TILE_SIZE, TILE_SIZE))
-        self.rect = self.image.get_rect()
-        self.rect.center = self.pos
+class Player(BaseSprite):
+    def __init__(self, imagePath, game, groups, x, y):
+        BaseSprite.__init__(self, imagePath, game, groups, x, y)
         self.hit_rect = self.rect.copy()
-
         self.vel = vec(0, 0)
-
-
-    def draw(self, screen, adjusted_rect):
-        screen.blit(self.image, adjusted_rect)
 
     def update(self):
         """ Sterowanie """
@@ -35,7 +21,6 @@ class Player(pygame.sprite.Sprite):
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center  # niby dzila tez bez tego
-
 
     def controls(self):
         keys = pygame.key.get_pressed()

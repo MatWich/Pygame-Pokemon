@@ -40,9 +40,10 @@ SCR_SIZE = (WIDTH, HEIGHT) = (600, 500)
 
 # IMAGES
 PLAYER_IMG_PATH = "images/prof.png"
-NPC1_IMG_PATH = "images/Sand.png"
+NPC1_IMG_PATH = "images/NPC1.png"
 GRASS_IMG_PATH="images/Grass.png"
-SAND_IMG_PATH="images/NPC1.png"
+SAND_IMG_PATH="images/Sand.png"
+SPRITE_NOT_FOUND_PATH="images/sprite_not_found.png"
 
 
 def collide_hit_rect(sp1, sp2):

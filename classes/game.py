@@ -1,6 +1,8 @@
 import pygame
 import random
 from os import path
+
+from classes.map_container import MapContainer
 from config import *
 from classes.map import Map
 from classes.camera import Camera
@@ -15,13 +17,14 @@ class Game:
         self.screen = pygame.display.set_mode(SCR_SIZE)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
+        self.mapContainer = MapContainer().loadMapPaths()
         self.counter = 0
         self.load_data()
         self.set_up()
 
     def load_data(self):
-        self.map_bg = Map(path.join(MAP_FOLDER, "map2.txt"))
-        self.map = Map(path.join(MAP_FOLDER, "map3.txt"))
+        self.map_bg = self.mapContainer.getMap("map2")
+        self.map = self.mapContainer.getMap("map3")
 
         self.player_img = pygame.image.load(PLAYER_IMG_PATH).convert_alpha()
         self.player_img = pygame.transform.scale(self.player_img, (TILE_SIZE, TILE_SIZE))

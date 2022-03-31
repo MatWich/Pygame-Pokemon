@@ -23,8 +23,8 @@ class Game:
         self.set_up()
 
     def load_data(self):
-        self.map_bg = self.mapContainer.getMap("map2")
-        self.map = self.mapContainer.getMap("map3")
+        self.map_bg = self.mapContainer.getMap("objects_location_1")
+        self.map = self.mapContainer.getMap("tiles_location_1")
 
         self.player_img = pygame.image.load(PLAYER_IMG_PATH).convert_alpha()
         self.player_img = pygame.transform.scale(self.player_img, (TILE_SIZE, TILE_SIZE))

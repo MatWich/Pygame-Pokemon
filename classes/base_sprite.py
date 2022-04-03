@@ -1,6 +1,6 @@
 import pygame
-
 import classes.game
+
 from config import *
 vec2 = pygame.math.Vector2
 

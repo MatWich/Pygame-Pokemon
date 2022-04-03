@@ -3,8 +3,8 @@ import random
 from os import path
 
 from classes.map_container import MapContainer
+from classes.tall_grass import TallGrass
 from config import *
-from classes.map import Map
 from classes.camera import Camera
 from classes.player import Player
 from classes.tile import Tile
@@ -43,6 +43,7 @@ class Game:
         self.enemies = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.tiles = pygame.sprite.Group()
+        self.grass = pygame.sprite.Group()
 
         for row, tiles in enumerate(self.map_bg.data):
             for col, tile in enumerate(tiles):
@@ -84,6 +85,9 @@ class Game:
             # self.screen.blit(sprite.image, self.camera.apply(sprite))
             sprite.draw(self.screen, self.camera)
 
+        for sprite in self.grass:
+            sprite.draw(self.screen, self.camera)
+
         for sprite in self.walls:
             sprite.draw(self.screen, self.camera)
 
@@ -102,12 +106,15 @@ class Game:
 
         elif tile == 'G':
             if self.counter % 2 == 0:
-                Tile(SAND_IMG_PATH, self, self.tiles, col, row)
+                Tile(SAND_IMG_PATH, self, (self.tiles, self.all_sprites), col, row)
             else:
-                Tile(GRASS_IMG_PATH, self, self.tiles, col, row)
+                Tile(GRASS_IMG_PATH, self, (self.tiles, self.all_sprites), col, row)
             self.counter+=1
         elif tile == 'W':
-            Wall(NPC1_IMG_PATH, self, self.walls, col, row)
+            Wall(NPC1_IMG_PATH, self, (self.walls, self.all_sprites), col, row)
+
+        elif tile == 'T':
+            TallGrass(TALL_GRASS_IMG_PATH, self, (self.grass, self.all_sprites), col, row)
 
     def quit(self):
         self.run = False

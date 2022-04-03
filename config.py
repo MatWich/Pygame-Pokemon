@@ -44,13 +44,14 @@ NPC1_IMG_PATH = "images/NPC1.png"
 GRASS_IMG_PATH="images/Grass.png"
 SAND_IMG_PATH="images/Sand.png"
 SPRITE_NOT_FOUND_PATH="images/sprite_not_found.png"
+TALL_GRASS_IMG_PATH="images/tall_grass.png"
 
 
 def collide_hit_rect(sp1, sp2):
     return sp1.hit_rect.colliderect(sp2.rect)
 
 
-def collide_with_walls(sprite, group, dir):
+def wall_colision_detection(sprite, group, dir):
     if dir == 'x':
         hits = pygame.sprite.spritecollide(sprite, group, False, collide_hit_rect)
         if hits:

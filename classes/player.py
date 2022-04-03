@@ -17,10 +17,11 @@ class Player(BaseSprite):
         self.pos += self.vel * self.game.dt
 
         self.hit_rect.centerx = self.pos.x
-        collide_with_walls(self, self.game.walls, 'x')
+        wall_colision_detection(self, self.game.walls, 'x')
         self.hit_rect.centery = self.pos.y
-        collide_with_walls(self, self.game.walls, 'y')
+        wall_colision_detection(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center  # niby dzila tez bez tego
+
 
     def controls(self):
         keys = pygame.key.get_pressed()

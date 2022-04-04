@@ -25,7 +25,7 @@ class Player(BaseSprite):
 
     def controls(self):
         keys = pygame.key.get_pressed()
-        self.vel = vec(0 ,0)
+        self.vel = vec(0, 0)
         if keys[pygame.K_SPACE]:
             print("csdc")
         elif keys[pygame.K_d]:

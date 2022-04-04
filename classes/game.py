@@ -2,6 +2,7 @@ import pygame
 import random
 from os import path
 
+from classes.game_state import GameState
 from classes.map_container import MapContainer
 from classes.tall_grass import TallGrass
 from config import *
@@ -12,11 +13,13 @@ from classes.wall import Wall
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, screen):
         pygame.init()
-        self.screen = pygame.display.set_mode(SCR_SIZE)
+        self.screen = screen
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
+        self.state = GameState.OPEN_WORLD
+        self.player = None
         self.mapContainer = MapContainer().loadMapPaths()
         self.counter = 0
         self.load_data()
@@ -56,12 +59,9 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
 
     def mainloop(self):
-        self.run = True
-        while self.run:
-            self.dt = self.clock.tick(FPS) / 1000
-            self.events()
-            self.update()
-            self.draw()
+        self.events()
+        self.update()
+        self.draw()
 
     def events(self):
         for event in pygame.event.get():
@@ -109,7 +109,8 @@ class Game:
                 Tile(SAND_IMG_PATH, self, (self.tiles, self.all_sprites), col, row)
             else:
                 Tile(GRASS_IMG_PATH, self, (self.tiles, self.all_sprites), col, row)
-            self.counter+=1
+            self.counter += 1
+
         elif tile == 'W':
             Wall(NPC1_IMG_PATH, self, (self.walls, self.all_sprites), col, row)
 
@@ -118,4 +119,5 @@ class Game:
 
     def quit(self):
         self.run = False
+        self.state = GameState.ENDED
         pygame.quit()

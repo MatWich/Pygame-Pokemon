@@ -1,5 +1,6 @@
 import random
 
+from classes.game_state import GameState
 from config import *
 from classes.base_sprite import BaseSprite
 
@@ -27,4 +28,5 @@ class TallGrass(BaseSprite):
             if seed < .01:
                 print("Pokemon encountered")
                 self.pokemonSpawned = True
+                self.game.state = GameState.BATTLE
 

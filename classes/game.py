@@ -5,6 +5,7 @@ from os import path
 from classes.game_state import GameState
 from classes.map_container import MapContainer
 from classes.tall_grass import TallGrass
+from classes.teleport import Teleport
 from config import *
 from classes.camera import Camera
 from classes.player import Player
@@ -16,18 +17,19 @@ class Game:
     def __init__(self, screen):
         pygame.init()
         self.screen = screen
-        pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.state = GameState.OPEN_WORLD
         self.player = None
+        self.map = None
+        self.map_bg = None
         self.mapContainer = MapContainer().loadMapPaths()
+        self.camera = None
         self.counter = 0
         self.load_data()
         self.set_up()
 
     def load_data(self):
-        self.map_bg = self.mapContainer.getMap("objects_location_1")
-        self.map = self.mapContainer.getMap("tiles_location_1")
+        self.change_map(LOCATION_1)
 
         self.player_img = pygame.image.load(PLAYER_IMG_PATH).convert_alpha()
         self.player_img = pygame.transform.scale(self.player_img, (TILE_SIZE, TILE_SIZE))
@@ -40,9 +42,23 @@ class Game:
 
         pygame.display.set_icon(self.enemy_img)
 
+    def change_map(self, name):
+        fg_map_name = "objects_" + name
+        bg_map_name = "tiles_" + name
+        self.map_bg = self.mapContainer.getMap(bg_map_name)
+        self.map = self.mapContainer.getMap(fg_map_name)
+        if self.camera is None:
+            pass
+        else:
+            self.camera.adjust(self.map_bg.width, self.map_bg.height)
+        # self.map_bg = self.mapContainer.getMap("objects_location_1")
+        # self.map = self.mapContainer.getMap("tiles_location_1")
+
     def set_up(self):
         self.all_sprites = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
+        self.teleports = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.tiles = pygame.sprite.Group()
@@ -56,7 +72,7 @@ class Game:
             for col, tile in enumerate(tiles):
                 self.what_to_create(tile, row, col)
 
-        self.camera = Camera(self.map.width, self.map.height)
+        self.camera = Camera(self.map_bg.width, self.map_bg.height)
 
     def mainloop(self):
         self.events()
@@ -87,10 +103,14 @@ class Game:
 
         for sprite in self.grass:
             sprite.draw(self.screen, self.camera)
+            # self.screen.blit(sprite.image, self.camera.apply(sprite))
+
+        for sprite in self.teleports:
+            sprite.draw(self.screen, self.camera)
 
         for sprite in self.walls:
             sprite.draw(self.screen, self.camera)
-
+            # self.screen.blit(sprite.image, self.camera.apply(sprite))
         self.player.draw(self.screen, self.camera)
         pygame.display.update()
 
@@ -102,7 +122,7 @@ class Game:
 
     def what_to_create(self, tile, row, col):
         if tile == 'P':
-            self.player = Player(PLAYER_IMG_PATH, self, self.all_sprites, col, row)
+            self.player = Player(PLAYER_IMG_PATH, self, (self.all_sprites), col, row)
 
         elif tile == 'G':
             if self.counter % 2 == 0:
@@ -116,6 +136,9 @@ class Game:
 
         elif tile == 'T':
             TallGrass(TALL_GRASS_IMG_PATH, self, (self.grass, self.all_sprites), col, row)
+
+        elif tile == 'D':
+            Teleport(None, self, (self.all_sprites, self.teleports), col, row)
 
     def quit(self):
         self.run = False

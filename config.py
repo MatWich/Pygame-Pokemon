@@ -3,10 +3,7 @@ pygame.font.init()
 from os import path
 
 # SCREEN VARIABLES
-WIDTH = 620
-HEIGHT = 480
-SCREEN_SIZE = (WIDTH, HEIGHT)
-
+SCR_SIZE = (WIDTH, HEIGHT) = (620, 480)
 TITLE = "Pygame Pokemon"
 FPS = 60
 
@@ -14,29 +11,22 @@ FPS = 60
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-# SCALE SPRITES
-SCALE = 32
-
-# TILE MAP STRUCTURES
-mapTileImage = {
-    "G": pygame.transform.scale(pygame.image.load("images/Grass.png"), (SCALE, SCALE)),
-    "S": pygame.transform.scale(pygame.image.load("images/Sand.png"), (SCALE, SCALE)),
-}
-
 # FONTS
 dialogFont = pygame.font.SysFont('comicsans', 20)    #npcs dialogs
 
 # LABELS
-
 TILE_SIZE=32
 GAME_FOLDER = path.dirname(__file__)
 MAP_FOLDER = path.join(GAME_FOLDER, "maps")
 IMG_FOLDER = path.join(GAME_FOLDER, "imgs")
 PLAYER_IMG_FOLDER = path.join(IMG_FOLDER, "player")
 ENEMY_IMG = "walker.png"
-SCR_SIZE = (WIDTH, HEIGHT) = (600, 500)
+
 # DIALOUGES
 
+
+# MAPS
+LOCATION_1 = "location_1"
 
 # IMAGES
 PLAYER_IMG_PATH = "images/prof.png"

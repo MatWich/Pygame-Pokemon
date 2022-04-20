@@ -3,15 +3,19 @@ from config import *
 
 
 class Camera:
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int):
         self.camera = pygame.Rect(0, 0, width, height)  # bedzie sprawdzaxc jak daleko jest sie od konca mapy
+        self.width: int = width
+        self.height: int = height
+
+    def apply(self, entity: pygame.sprite.Sprite) -> pygame.Rect:
+        return entity.rect.move(self.camera.topleft)
+
+    def adjust(self, width: int, height: int):
         self.width = width
         self.height = height
 
-    def apply(self, entity) -> pygame.Rect:
-        return entity.rect.move(self.camera.topleft)
-
-    def update(self, target):  # target == lapyer
+    def update(self, target: pygame.sprite.Sprite):  # target == lapyer
         x = -target.rect.centerx + int(WIDTH / 2)
         y = -target.rect.centery + int(HEIGHT / 2)
 

@@ -4,9 +4,10 @@ from classes.game_state import GameState
 from config import *
 
 screen = pygame.display.set_mode(SCR_SIZE)
-
+pygame.display.set_caption(TITLE)
 game = Game(screen)
 game.dt = game.clock.tick(FPS) / 1000
+
 
 if __name__ == "__main__":
     while game.state != GameState.ENDED:

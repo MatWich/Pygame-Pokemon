@@ -7,7 +7,9 @@ from classes.base_sprite import BaseSprite
 
 class TallGrass(BaseSprite):
     def __init__(self, imagePath, game, group, x, y):
+        self._layer = 1
         BaseSprite.__init__(self, imagePath, game, group, x, y)
+
         self.pokemonSpawned = False
 
     def draw(self, screen, camera):

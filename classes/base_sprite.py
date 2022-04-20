@@ -6,7 +6,7 @@ vec2 = pygame.math.Vector2
 
 
 class BaseSprite(pygame.sprite.Sprite):
-    def __init__(self, imagePath: str, game, groups: pygame.sprite.Group, x: int, y: int):
+    def __init__(self, imagePath: str, game, groups, x: int, y: int):
         if groups is None:
             self.groups = game.all_sprites
         else:
@@ -28,3 +28,8 @@ class BaseSprite(pygame.sprite.Sprite):
 
     def update(self):
         pass
+
+    def __repr__(self) -> str:
+        return "{}({!r})".format(self.__class__.__name__, self.__dict__)
+
+

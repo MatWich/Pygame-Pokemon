@@ -15,6 +15,7 @@ class Teleport(BaseSprite):
         super().update()
         if self.detect_collision_with_player(self.game.player):
             print("TODO: Teleport to other map")
+            self.game.change_map("location_2")
 
     def detect_collision_with_player(self, player):
         return collide_hit_rect(player, self)

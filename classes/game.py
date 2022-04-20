@@ -51,16 +51,21 @@ class Game:
             pass
         else:
             self.camera.adjust(self.map_bg.width, self.map_bg.height)
+            self.all_sprites.empty()
+            self.enemies.empty()
+            self.teleports.empty()
+            self.walls.empty()
+            self.tiles.empty()
+            self.grass.empty()
+            self.set_up()
         # self.map_bg = self.mapContainer.getMap("objects_location_1")
         # self.map = self.mapContainer.getMap("tiles_location_1")
 
     def set_up(self):
         self.all_sprites = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
-        self.player_group = pygame.sprite.Group()
         self.teleports = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
-        self.bullets = pygame.sprite.Group()
         self.tiles = pygame.sprite.Group()
         self.grass = pygame.sprite.Group()
 
@@ -72,7 +77,8 @@ class Game:
             for col, tile in enumerate(tiles):
                 self.what_to_create(tile, row, col)
 
-        self.camera = Camera(self.map_bg.width, self.map_bg.height)
+        if self.camera is None:
+            self.camera = Camera(self.map_bg.width, self.map_bg.height)
 
     def mainloop(self):
         self.events()
@@ -139,6 +145,9 @@ class Game:
 
         elif tile == 'D':
             Teleport(None, self, (self.all_sprites, self.teleports), col, row)
+
+        elif tile == 'S':
+            Tile(SAND_IMG_PATH, self, (self.tiles, self.all_sprites), col, row)
 
     def quit(self):
         self.run = False

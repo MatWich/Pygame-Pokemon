@@ -12,8 +12,7 @@ class Teleport(BaseSprite):
         super().draw(screen, camera)
 
     def update(self):
-        super().update()
-        if self.detect_collision_with_player(self.game.player):
+        if self.game.player is not None and self.detect_collision_with_player(self.game.player):
             print("TODO: Teleport to other map")
             self.game.change_map("location_2")
 

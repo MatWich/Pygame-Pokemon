@@ -1,3 +1,4 @@
+from classes.npc import NPC
 from classes.player import Player
 from classes.tall_grass import TallGrass
 from classes.teleport import Teleport
@@ -19,6 +20,10 @@ class ObjectFactory:
             Teleport(None, game, (game.all_sprites, game.objects, game.teleports), x, y)
         elif key.__eq__('T'):
             TallGrass(TALL_GRASS_IMG_PATH, game, (game.all_sprites, game.objects, game.grass), x, y)
+        elif key.__eq__('N'):
+            NPC(None, game, (game.all_sprites, game.objects, game.npcs), x, y)
+
+
         else:
             raise Exception("Wrong parameters passed to TileFactory.get_sprite() function")
 
